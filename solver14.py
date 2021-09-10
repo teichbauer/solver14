@@ -1,6 +1,6 @@
 import sys
 import time
-from basics import get_sdic, ordered_dic_string, verify_sat
+from basics import get_sdic, ordered_dic_string, verify_sat, display_vkdic
 from center import Center
 from satholder import SatHolder
 from satnode import SatNode
@@ -19,6 +19,7 @@ def make_vkm(cnf_fname):
     vkdic = get_vkdic_from_cfg(cnf_fname)
     vkm = VKManager(vkdic, True)
     Center.orig_vkm = vkm.clone()
+    # display_vkdic(vkdic,"cfg60-266", "cfg60-266-vkdic.txt")
     return vkm
 
 

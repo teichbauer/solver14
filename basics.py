@@ -1,13 +1,5 @@
-# def compare_grps(d1, d2):
-#     if d1.keys() != d2.keys():
-#         return False
-#     for k in d1:
-#         if d1[k].keys() != d2[k].keys():
-#             return False
-#         for kk in d1[k]:
-#             if not d1[k][kk].equals(d2[k][kk]):
-#                 return False
-#     return True
+from datetime import datetime
+
 
 def verify_sat(vkdic, sat):
     for vk in vkdic.values():
@@ -111,12 +103,23 @@ def vkdic_remove(vkdic, kns):
     return kd
 
 
-def display_vkdic(vkd, title=None):
-    if title:
-        print(title)
+def display_vkdic(vkd, title=None, outfile=None):
     kns = list(vkd.keys())
     kns.sort()
-    for kn in kns:
-        vk = vkd[kn]
-        print(f"{kn}: " + ordered_dic_string(vk.dic))
-    print("-------------")
+    if outfile:
+        now = datetime.now()
+        with open(outfile, 'w') as ofile:
+            ofile.write(f"{now.isoformat()}\n----------------------\n")
+            if title:
+                ofile.write(f"{title}\n---------\n")
+            for kn in kns:
+                vk = vkd[kn]
+                msg, dummy = ordered_dic_string(vk.dic)
+                ofile.write(f"{kn}: {msg}\n")
+    else:
+        if title:
+            print(title)
+        for kn in kns:
+            vk = vkd[kn]
+            print(f"{kn}: " + ordered_dic_string(vk.dic))
+        print("-------------")

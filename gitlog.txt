@@ -1,3 +1,9 @@
+2021-09-10->0.256
+- progress on analyzing tn.grp logics
+2021-09-07->0.255
+- branch off solver14 from solver13. solver13 now performs better:
+  cfg60-266.json can be done in 1.2sec in stead of 1.7sec. But now use
+  solver14 to explore more possibility.
 2021-09-05->0.254
 - Center/satbits and .bits update moved to split_vkm
 - get rid of vk12mgr/bset

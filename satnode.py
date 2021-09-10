@@ -81,25 +81,18 @@ class SatNode:
                         if gv in ptnode.grps:
                             vkmx = vkm.clone()
                             if vkmx.add_vkdic(ptnode.grps[gv]):
-                                tnname = name0 + ptnode.name
-                                tn = TNode(vkmx, self, tnname)
-                                # r = tn.validate()
-                                dic[tnname] = tn
-                                tn.get_grps()
+                                tname = name0 + ptnode.name
+                                dic[tname] = TNode(vkmx, self, tname)
                     elif type(ptnode).__name__ == 'dict':
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
                                 vkmx = vkm.clone()
                                 if vkmx.add_vkdic(tnd.grps[gv]):
-                                    tnname = name0 + ky
-                                    tn = TNode(vkmx, self, tnname)
-                                    dic[tnname] = tn
-                                    tn.get_grps()
+                                    tname = name0 + ky
+                                    dic[tname] = TNode(vkmx, self, tname)
             else:
-                tnode = TNode(vkm, self, f"{self.nov}.{gv}")
-                tnode.get_grps()
+                self.chdic[gv] = TNode(vkm, self, f"{self.nov}.{gv}")
 
-                self.chdic[gv] = tnode
         Center.add_path_tnodes(self.chdic)
         if self.nov < 60:
             print(f"nov: {self.nov}")

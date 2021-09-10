@@ -1,17 +1,18 @@
 from vk12mgr import VK12Manager
 from vklause import VKlause
 from center import Center
+from basics import display_vkdic
 
 
 class TNode:
     # def __init__(self, vk12dic, holder_snode, val):
     def __init__(self, vk12m, holder_snode, name):
         self.holder = holder_snode
-        # self.sh = holder_snode.next_sh
         self.name = name
-        # self.hsat = holder_snode.sh.get_sats(val)
         self.vkm = vk12m
-        # self.vkm = VK12Manager(vk12dic)
+        display_vkdic(
+            vk12m.vkdic, f"{name}:{len(vk12m.vkdic)}", f"./docs/{name}.txt")
+        self.get_grps()
 
     def get_grps(self):
         if not self.holder.next:
@@ -44,6 +45,10 @@ class TNode:
                                 self.grps[v][kn] = new_vk
                             else:
                                 self.grps[v].pop(kn, None)
+        for v in self.grps:
+            name = f"{self.name}-grp.{v}"
+            display_vkdic(self.grps[v], name, f"./docs/{name}.txt")
+            x = 1
 
     def get_nsat(self):
         sat = {}
