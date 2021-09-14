@@ -60,6 +60,8 @@ class VK12Manager:
         kns = knames[:]  # kns for loop:can't use knames, for it may change.
         for kn in kns:
             if kn in self.kn1s:
+                if bit not in self.bdic:
+                    y = 1
                 if kn not in self.bdic[bit]:  # bdic may have been updated, so
                     continue  # kn may no more be in there on this bit any more
                 vk1 = self.vkdic[kn]
@@ -103,7 +105,7 @@ class VK12Manager:
         # add the vk
         self.vkdic[vk.kname] = vk
         self.kn1s.append(vk.kname)
-        knames.append(vk.kname)
+        self.bdic.setdefault(bit, []).append(vk.kname)
         return True
 
     def add_vk2(self, vk):

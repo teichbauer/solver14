@@ -10,8 +10,8 @@ class TNode:
         self.holder = holder_snode
         self.name = name
         self.vkm = vk12m
-        display_vkdic(
-            vk12m.vkdic, f"{name}:{len(vk12m.vkdic)}", f"./docs/{name}.txt")
+        # display_vkdic(
+        #     vk12m.vkdic, f"{name}:{len(vk12m.vkdic)}", f"./docs/{name}.txt")
         self.get_grps()
 
     def get_grps(self):
@@ -45,10 +45,10 @@ class TNode:
                                 self.grps[v][kn] = new_vk
                             else:
                                 self.grps[v].pop(kn, None)
-        for v in self.grps:
-            name = f"{self.name}-grp.{v}"
-            display_vkdic(self.grps[v], name, f"./docs/{name}.txt")
-            x = 1
+        # for v in self.grps:
+        #     name = f"{self.name}-grp.{v}"
+        #     display_vkdic(self.grps[v], name, f"./docs/{name}.txt")
+        #     x = 1
 
     def get_nsat(self):
         sat = {}
