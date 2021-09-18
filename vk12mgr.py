@@ -179,13 +179,12 @@ class VK12Manager:
         self.vkdic[vk.kname] = vk
         return True
 
-    def remove_vk1(self, kname=None):
-        if len(self.kn1s) == 0:
+    def remove_vk1(self, kname):
+        if kname not in self.kn1s:
             return None
-        kn = self.kn1s.pop(0)
-        vk = self.vkdic.pop(kn)
+        vk = self.vkdic.pop(kname)
         bit = vk.bits[0]
-        self.bdic[bit].remove(kn)
+        self.bdic[bit].remove(kname)
         if len(self.bdic[bit]) == 0:
             self.bdic.pop(bit)
         return vk

@@ -2,6 +2,7 @@ from vk12mgr import VK12Manager
 from vklause import VKlause
 from center import Center
 from basics import display_vkdic
+from node2 import Node2
 
 
 class TNode:
@@ -13,6 +14,10 @@ class TNode:
         # display_vkdic(
         #     vk12m.vkdic, f"{name}:{len(vk12m.vkdic)}", f"./docs/{name}.txt")
         self.get_grps()
+
+    def make_node2(self):
+        self.node2 = Node2(self.vkm)
+        self.node2.spawn()
 
     def get_grps(self):
         if not self.holder.next:

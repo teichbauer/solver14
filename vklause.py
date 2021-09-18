@@ -31,6 +31,7 @@ class VKlause:
             self.bits.remove(bit)
             self.nob -= 1
             self.dic.pop(bit)
+        return self
 
     def clone(self, bits2b_dropped=None):
         # bits2b_dropped: list of bits to be dropped.

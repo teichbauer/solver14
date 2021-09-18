@@ -4,6 +4,7 @@ from vk12mgr import VK12Manager
 from tnode import TNode
 from bitgrid import BitGrid
 from center import Center
+from node2 import Node2
 
 
 class SatNode:
@@ -87,9 +88,13 @@ class SatNode:
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
                                 vkmx = vkm.clone()
+                                n2 = Node2(vkmx)
+                                n2.spawn()
                                 if vkmx.add_vkdic(tnd.grps[gv]):
                                     tname = name0 + ky
-                                    dic[tname] = TNode(vkmx, self, tname)
+                                    tnode = TNode(vkmx, self, tname)
+                                    dic[tname] = tnode
+                                    # tnode.make_node2()
             else:
                 self.chdic[gv] = TNode(vkm, self, f"{self.nov}.{gv}")
 
