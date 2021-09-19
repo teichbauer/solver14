@@ -48,8 +48,8 @@ class Node2:
         vkm1 = VK12Manager()  # subset of vks, for when mbit set to 1
         sat1 = {mbit: 1}
 
-        drp_kns = self.vkm.bdic.pop(mbit)
-        kns = self.vkm.kn2s[:]  # all kns of vk2s in self.vkm
+        drp_kns = set(self.vkm.bdic.pop(mbit))
+        kns = sorted(self.vkm.kn2s[:])  # all kns of vk2s in self.vkm
         for kn in drp_kns:
             kns.remove(kn)      # drop-out kn
             vk = self.vkm.vkdic.pop(kn)
@@ -59,8 +59,18 @@ class Node2:
                 vkm1.add_vk1(vk.drop_bit(mbit))
         for kn in kns:
             vk2 = self.vkm.vkdic.pop(kn)
-            vkm0.add_vk2(vk2)
-            vkm1.add_vk2(vk2)
-        self.chs = [Node2(vkm0).add_sat(sat0), Node2(vkm1).add_sat(sat1)]
+            vkm0.add_vk2(vk2.clone())  # add_vk2 may modify vk2, clone, so
+            vkm1.add_vk2(vk2)          # vkm1/add_vk2 won't have it wrong
+        sd0 = set(self.vkm.bdic) - set(vkm0.bdic)
+        for b in sd0:
+            sat0[b] = 2
+        sd1 = set(self.vkm.bdic) - set(vkm1.bdic)
+        for b in sd1:
+            sat1[b] = 2
+        node0 = Node2(vkm0)
+        node0.add_sat(sat0)
+        node1 = Node2(vkm1)
+        node1.add_sat(sat1)
+        self.chs = [node0, node1]
 
         return True
