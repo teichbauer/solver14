@@ -4,7 +4,8 @@ from basics import get_bit
 
 
 class Node2:
-    def __init__(self, vkm):
+    def __init__(self, vkm, parent):
+        self.parent = parent
         if type(vkm).__name__ == 'VK12Manager':
             self.vk1m, self.vkm = self.split_vkm(vkm.clone())
         elif type(vkm) == type({}):
@@ -67,9 +68,9 @@ class Node2:
         sd1 = set(self.vkm.bdic) - set(vkm1.bdic)
         for b in sd1:
             sat1[b] = 2
-        node0 = Node2(vkm0)
+        node0 = Node2(vkm0, self)
         node0.add_sat(sat0)
-        node1 = Node2(vkm1)
+        node1 = Node2(vkm1, self)
         node1.add_sat(sat1)
         self.chs = [node0, node1]
         for n2 in self.chs:

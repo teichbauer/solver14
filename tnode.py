@@ -16,7 +16,7 @@ class TNode:
         self.get_grps()
 
     def make_node2(self):
-        self.node2 = Node2(self.vkm)
+        self.node2 = Node2(self.vkm, self)
         self.node2.spawn()
 
     def get_grps(self):
