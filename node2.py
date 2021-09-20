@@ -22,8 +22,8 @@ class Node2:
 
     def split_vkm(self, vk12m):
         vk1m = VK12Manager()
-        for kn in vk12m.kn1s:
-            vk1 = vk12m.remove_vk1(kn)
+        while len(vk12m.kn1s) > 0:
+            vk1 = vk12m.remove_vk1(vk12m.kn1s[0])
             if vk1:
                 vk1m.add_vk1(vk1)
         return vk1m, vk12m  # vk12m is now vk2m
@@ -72,5 +72,7 @@ class Node2:
         node1 = Node2(vkm1)
         node1.add_sat(sat1)
         self.chs = [node0, node1]
+        for n2 in self.chs:
+            n2.spawn()
 
         return True
