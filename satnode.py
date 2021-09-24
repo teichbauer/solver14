@@ -88,8 +88,14 @@ class SatNode:
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
                                 vkmx = vkm.clone()
-                                n2 = Node2(vkmx, self)
-                                n2.spawn()
+                                sbit = vkmx.pick_sbit()
+                                if sbit:
+                                    n2 = Node2(vkmx, self, sbit)
+                                    n2.spawn()
+                                else:
+                                    pass
+                                # n2 = Node2(vkmx, self)
+                                # n2.spawn()
                                 if vkmx.add_vkdic(tnd.grps[gv]):
                                     tname = name0 + ky
                                     tnode = TNode(vkmx, self, tname)

@@ -199,62 +199,13 @@ class VK12Manager:
                 self.bdic.pop(b)
         return vk
 
-    def pick_bvk(self):
-        if len(self.kn1s) > 0:
-            return self.vkdic[self.kn1s[0]]
-        else:
-            return self.vkdic[self.kn2s[0]]
-
-    def morph(self, n12):
-        n12.vk12dic = {}
-        chs = {}
-        excl_cvs = set([])
-        # all possible values: for 2 bits:(0,1,2,3); for 1 bit: (0,1)
-        allvalues = [(0, 1), (0, 1, 2, 3)][n12.sh.ln == 2]
-        tdic = {}
-
-        for kn, vk in self.vkdic.items():
-            bs = vk.bits[:]
-            out_bits = set(bs) - set(n12.sh.varray)
-            if len(out_bits) == 0:
-                if vk.nob == n12.sh.ln:
-                    excl_cvs.add(vk.cmprssd_value())
-                elif vk.hit(n12.hsat):
-                    raise Exception(f"Wrong vk: {vk.kname}")
-                else:
-                    pass  # drop this vk
-            elif len(out_bits) == vk.nob:
-                # vk is totally outside of sh
-                tdic.setdefault(allvalues, []).append(vk)
-            else:
-                # vk divided: in sh 1 bit, out 1 bit
-                outb = out_bits.pop()
-                vk12 = VKlause(vk.kname, {outb: vk.dic[outb]}, vk.nov)
-                bs.remove(outb)  # bs now has only 1 of vk that is in sh
-                in_index = n12.sh.varray.index(bs[0])
-                vs = []
-                for v in allvalues:
-                    if get_bit(v, in_index) == vk.dic[bs[0]]:
-                        vs.append(v)
-                tdic.setdefault(tuple(vs), []).append(vk12)
-
-        for val in allvalues:
-            if val in excl_cvs:
-                continue
-            sub_vk12dic = {}
-            for cvr in tdic:
-                if val in cvr:  # kv does have outside bit
-                    vks = tdic[cvr]
-                    for vk in vks:
-                        sub_vk12dic[vk.kname] = vk.clone()
-            # vkm = VK12Manager(self.nov - n12.sh.ln, sub_vk12dic)
-            vkm = VK12Manager(sub_vk12dic)
-            if vkm.valid:
-                node = n12.__class__(
-                    n12,  # n12 is parent-node
-                    n12.next_sh,  # sh
-                    n12.sh.get_sats(val),  # val -> hsat
-                    vkm,
-                )
-                chs[val] = node
-        return chs  # for making chdic with tnodes
+    def pick_sbit(self):
+        max = 1
+        maxbit = None
+        bits = sorted(self.bdic.keys(), reverse=True)
+        for b in bits:
+            curr = len(self.bdic[b])
+            if curr > max:
+                max = curr
+                maxbit = b
+        return maxbit
