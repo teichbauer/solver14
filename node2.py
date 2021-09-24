@@ -5,11 +5,6 @@ from basics import get_bit
 
 class Node2:
     def __init__(self, vkm, parent, name, sat={}):
-        if type(name) == type(0):
-            self.splitbit = name
-            self.name = 'root'
-        else:
-            self.name = name
         self.parent = parent
         if type(parent).__name__ == 'Node2':
             self.root = parent.root
@@ -21,6 +16,14 @@ class Node2:
             self.vk1m, self.vkm = self.split_vkm(vkm.clone())
         elif type(vkm) == type({}):
             self.vk1m, self.vkm = self.split_vkm(VK12Manager(vkm))
+
+        if type(name) == type(0):
+            self.splitbit = name
+            self.name = 'root'
+        else:
+            self.name = name
+            self.splitbit = self.vkm.pick_sbit()
+
         if len(self.vk1m.vkdic) > 0:
             for vk1 in self.vk1m.vkdic.values():
                 b, v = vk1.hbit_value()
@@ -38,16 +41,13 @@ class Node2:
         return vk1m, vk12m  # vk12m is now vk2m
 
     def spawn(self):
-        if self.root != self:
-            self.splitbit = self.vkm.pick_sbit()
-
         if not self.splitbit:
             self.root.sats.append(self.sats)
             return None
         vkm0 = VK12Manager()  # subset of vks, for when mbit set to 0
-        sat0 = {sbit: 0}
+        sat0 = {self.splitbit: 0}
         vkm1 = VK12Manager()  # subset of vks, for when mbit set to 1
-        sat1 = {sbit: 1}
+        sat1 = {self.splitbit: 1}
 
         drp_kns = set(self.vkm.bdic[self.splitbit])
         kns = sorted(self.vkm.kn2s[:])  # all kns of vk2s in self.vkm
@@ -81,6 +81,11 @@ class Node2:
         self.chs = node0, node1  # tuple of 2 children
 
         return True
+
+    def display(self):
+        m = f"{self.sats}->{self.splitbit} : "
+        m += f"{len(self.vkm.bdic)}/{len(self.vkm.vkdic)}"
+        return m
 
     def collect_sats(self, sats=[]):
         for sat in sats:
