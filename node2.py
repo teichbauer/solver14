@@ -1,21 +1,26 @@
+from vklause import VKlause
 from vk12mgr import VK12Manager
 from center import Center
 from basics import get_bit
 
 
 class Node2:
-    def __init__(self, vkm, parent, name, sat={}):
-        self.parent = parent
-        if type(parent).__name__ == 'Node2':
-            self.root = parent.root
-            self.sats = parent.sats[:]
-        else:
-            self.root = self
-            self.sats = []
+    def __init__(self, vkm, parent, name):
         if type(vkm).__name__ == 'VK12Manager':
             self.vk1m, self.vkm = self.split_vkm(vkm.clone())
         elif type(vkm) == type({}):
             self.vk1m, self.vkm = self.split_vkm(VK12Manager(vkm))
+        self.parent = parent
+        if type(parent).__name__ == 'Node2':
+            self.root = parent.root
+            self.twos = parent.twos[:]
+            # self.sats = parent.sats[:]
+            for kn in parent.vk1m.kn1s:
+                self.vk1m.add_vk1(parent.vk1m.vkdic[kn])
+        else:
+            self.root = self
+            self.twos = []
+            self.end_node2s = []
 
         if type(name) == type(0):
             self.splitbit = name
@@ -23,13 +28,6 @@ class Node2:
         else:
             self.name = name
             self.splitbit = self.vkm.pick_sbit()
-
-        if len(self.vk1m.vkdic) > 0:
-            for vk1 in self.vk1m.vkdic.values():
-                b, v = vk1.hbit_value()
-                sat[b] = int(not v)
-        if len(sat) > 0:
-            self.sats.append(sat)
         self.chs = []  # [<0-th vkm>, <1-th vkm>]
 
     def split_vkm(self, vk12m):
@@ -42,11 +40,13 @@ class Node2:
 
     def spawn(self):
         if not self.splitbit:
-            self.root.sats.append(self.sats)
+            self.root.end_node2s.append(self)
+            # self.root.sats.append(self.sats)
             return None
         vkm0 = VK12Manager()  # subset of vks, for when mbit set to 0
-        sat0 = {self.splitbit: 0}
+        vkm0.add_vk1(VKlause(f"{self.splitbit}.0", {self.splitbit: 1}))
         vkm1 = VK12Manager()  # subset of vks, for when mbit set to 1
+        vkm1.add_vk1(VKlause(f"{self.splitbit}.1", {self.splitbit: 0}))
         sat1 = {self.splitbit: 1}
 
         drp_kns = set(self.vkm.bdic[self.splitbit])
@@ -63,24 +63,52 @@ class Node2:
             vkm0.add_vk2(vk2.clone())  # add_vk2 may modify vk2, clone, so
             vkm1.add_vk2(vk2)          # vkm1/add_vk2 won't have it wrong
         sd0 = set(self.vkm.bdic) - set(vkm0.bdic)
+        twos0 = []
         for b in sd0:
             if b != self.splitbit:
-                sat0[b] = 2
+                twos0.append(b)
         sd1 = set(self.vkm.bdic) - set(vkm1.bdic)
+        twos1 = []
         for b in sd1:
             if b != self.splitbit:
-                sat1[b] = 2
+                twos1.append(b)
         name0 = f"{self.name}-{self.splitbit}.0"
-        node0 = Node2(vkm0, self, name0, sat0)
-        # node0.sat.update(sat0)
+        node0 = Node2(vkm0, self, name0)
+        node0.twos += twos0
         name1 = f"{self.name}-{self.splitbit}.1"
-        node1 = Node2(vkm1, self, name1, sat1)
+        node1 = Node2(vkm1, self, name1)
+        node1.twos += twos1
         # node1.sat.update(sat1)
         node0.spawn()
         node1.spawn()
         self.chs = node0, node1  # tuple of 2 children
 
         return True
+
+    # def verify_merge(self, vkm):
+    def verify_merge(self, vkdic):
+        good_vkms = {}
+        for ind, satvkm in enumerate(self.sat_vkms):
+            # vkm = satvkm.clone()
+            satvkm.add_vkdic(vkdic)
+            if satvkm.valid:
+                good_vkms[ind] = satvkm
+        return good_vkms
+
+    def get_sat(self, index=None):
+        if index == None:
+            lst = []
+            ln = len(self.root.sats)
+            for i in range(ln):
+                sat = self.get_sat(i)
+                lst.append(sat)
+            return lst
+        else:
+            lst = self.root.sats[index]
+            dic = {}
+            for st in lst:
+                dic.update(st)
+            return dic
 
     def display(self):
         m = f"{self.sats}->{self.splitbit} : "
@@ -93,3 +121,6 @@ class Node2:
         for ch in self.chs:
             ch.collect_sats(sats)
         return sats
+
+    def check(self, sat, vkm, overbits):
+        return True

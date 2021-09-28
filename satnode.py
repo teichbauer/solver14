@@ -5,6 +5,7 @@ from tnode import TNode
 from bitgrid import BitGrid
 from center import Center
 from node2 import Node2
+from basics import ordered_dic_string
 
 
 class SatNode:
@@ -85,17 +86,16 @@ class SatNode:
                                 tname = name0 + ptnode.name
                                 dic[tname] = TNode(vkmx, self, tname)
                     elif type(ptnode).__name__ == 'dict':
+                        sbit = vkm.pick_sbit()
+                        n2 = Node2(vkm, self, sbit)
+                        n2.spawn()
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
-                                vkmx = vkm.clone()
-                                sbit = vkmx.pick_sbit()
-                                if sbit:
-                                    n2 = Node2(vkmx, self, sbit)
-                                    n2.spawn()
-                                else:
-                                    pass
-                                # n2 = Node2(vkmx, self)
-                                # n2.spawn()
+                                # vkmx = vkm.clone()
+                                gvkms = n2.verify_merge(tnd.grps[gv])
+                                # tnd_vkm = VK12Manager(tnd.grps[gv])
+                                # ver = n2.verify_merge(tnd_vkm)
+
                                 if vkmx.add_vkdic(tnd.grps[gv]):
                                     tname = name0 + ky
                                     tnode = TNode(vkmx, self, tname)
