@@ -91,16 +91,14 @@ class SatNode:
                         n2.spawn()
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
-                                # vkmx = vkm.clone()
-                                gvkms = n2.verify_merge(tnd.grps[gv])
-                                # tnd_vkm = VK12Manager(tnd.grps[gv])
-                                # ver = n2.verify_merge(tnd_vkm)
-
-                                if vkmx.add_vkdic(tnd.grps[gv]):
-                                    tname = name0 + ky
-                                    tnode = TNode(vkmx, self, tname)
-                                    dic[tname] = tnode
-                                    # tnode.make_node2()
+                                tnd_vkm = VK12Manager(tnd.grps[gv])
+                                gvkms = n2.verify_merge(tnd_vkm)
+                                x = 1
+                                # if vkmx.add_vkdic(tnd.grps[gv]):
+                                #     tname = name0 + ky
+                                #     tnode = TNode(vkmx, self, tname)
+                                #     dic[tname] = tnode
+                                # tnode.make_node2()
             else:
                 self.chdic[gv] = TNode(vkm, self, f"{self.nov}.{gv}")
 

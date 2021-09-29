@@ -1,3 +1,5 @@
+2021-09-28->0.266
+- progress in node2
 2021-09-28->0.265
 - add-up vk1s to the end-nodes, and collect these end-nodes in root
   get rid of sats collection

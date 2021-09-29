@@ -41,16 +41,16 @@ class Node2:
     def spawn(self):
         if not self.splitbit:
             self.root.end_node2s.append(self)
-            # self.root.sats.append(self.sats)
             return None
         vkm0 = VK12Manager()  # subset of vks, for when mbit set to 0
         vkm0.add_vk1(VKlause(f"{self.splitbit}.0", {self.splitbit: 1}))
         vkm1 = VK12Manager()  # subset of vks, for when mbit set to 1
         vkm1.add_vk1(VKlause(f"{self.splitbit}.1", {self.splitbit: 0}))
-        sat1 = {self.splitbit: 1}
 
         drp_kns = set(self.vkm.bdic[self.splitbit])
         kns = sorted(self.vkm.kn2s[:])  # all kns of vk2s in self.vkm
+
+        # process vks sitting on splitbit
         for kn in drp_kns:
             kns.remove(kn)      # drop-out kn
             vk = self.vkm.vkdic.pop(kn)
@@ -58,6 +58,8 @@ class Node2:
                 vkm0.add_vk1(vk.drop_bit(self.splitbit))
             else:
                 vkm1.add_vk1(vk.drop_bit(self.splitbit))
+
+        # add vks not touched by splitbit
         for kn in kns:
             vk2 = self.vkm.vkdic.pop(kn)
             vkm0.add_vk2(vk2.clone())  # add_vk2 may modify vk2, clone, so
@@ -72,28 +74,40 @@ class Node2:
         for b in sd1:
             if b != self.splitbit:
                 twos1.append(b)
-        name0 = f"{self.name}-{self.splitbit}.0"
-        node0 = Node2(vkm0, self, name0)
+        node0 = Node2(vkm0, self, f"{self.name}-{self.splitbit}.0")
         node0.twos += twos0
-        name1 = f"{self.name}-{self.splitbit}.1"
-        node1 = Node2(vkm1, self, name1)
+        node1 = Node2(vkm1, self, f"{self.name}-{self.splitbit}.1")
         node1.twos += twos1
-        # node1.sat.update(sat1)
+
         node0.spawn()
         node1.spawn()
         self.chs = node0, node1  # tuple of 2 children
-
         return True
 
     # def verify_merge(self, vkm):
-    def verify_merge(self, vkdic):
-        good_vkms = {}
-        for ind, satvkm in enumerate(self.sat_vkms):
-            # vkm = satvkm.clone()
-            satvkm.add_vkdic(vkdic)
-            if satvkm.valid:
-                good_vkms[ind] = satvkm
-        return good_vkms
+    def verify_merge(self, tnd_vkm):
+        goods = {}
+        for ind, n2 in enumerate(self.end_node2s):
+            vkm = tnd_vkm.clone()
+            thru = True
+            kn1s = n2.vk1m.kn1s[:]
+            while len(kn1s) > 0:
+                vk1 = n2.vk1m.vkdic[kn1s.pop(0)]
+                thru = vkm.add_vk1(vk1)
+                if not thru:
+                    break
+            if not thru:
+                continue
+            kn2s = n2.vkm.kn2s[:]
+            while len(kn2s) > 0:
+                vk = n2.vkm.vkdic[kn2s.pop(0)]
+                thru = vkm.add_vk2(vk)
+                if not thru:
+                    break
+            if not thru:
+                continue
+            goods['name'] = vkm
+        return goods
 
     def get_sat(self, index=None):
         if index == None:
