@@ -77,7 +77,7 @@ class SatNode:
 
             if self.parent:
                 dic = self.chdic.setdefault(gv, {})
-                name0 = f"{self.nov}.{gv}-"
+                name0 = f"{self.nov}.{gv}"
                 for pv, ptnode in self.parent.chdic.items():
                     if type(ptnode).__name__ == 'TNode':
                         if gv in ptnode.grps:
@@ -93,12 +93,12 @@ class SatNode:
                             if gv in tnd.grps:
                                 tnd_vkm = VK12Manager(tnd.grps[gv])
                                 gvkms = n2.verify_merge(tnd_vkm)
-                                x = 1
-                                # if vkmx.add_vkdic(tnd.grps[gv]):
-                                #     tname = name0 + ky
-                                #     tnode = TNode(vkmx, self, tname)
-                                #     dic[tname] = tnode
-                                # tnode.make_node2()
+                                if len(gvkms) == 0:
+                                    continue
+                                for index, vkm in gvkms.items():
+                                    tname = name0 + f"({index})-{ky}"
+                                    tnode = TNode(vkm, self, tname)
+                                    dic[tname] = tnode
             else:
                 self.chdic[gv] = TNode(vkm, self, f"{self.nov}.{gv}")
 

@@ -89,22 +89,22 @@ class Node2:
         goods = {}
         for ind, n2 in enumerate(self.end_node2s):
             vkm = tnd_vkm.clone()
-            thru = True
+            # thru = True
             kn1s = n2.vk1m.kn1s[:]
             while len(kn1s) > 0:
                 vk1 = n2.vk1m.vkdic[kn1s.pop(0)]
-                thru = vkm.add_vk1(vk1)
-                if not thru:
+                added = vkm.add_vk1(vk1)
+                if not vkm.valid:
                     break
-            if not thru:
+            if not vkm.valid:
                 continue
             kn2s = n2.vkm.kn2s[:]
             while len(kn2s) > 0:
                 vk = n2.vkm.vkdic[kn2s.pop(0)]
-                thru = vkm.add_vk2(vk)
-                if not thru:
+                added = vkm.add_vk2(vk)
+                if not vkm.valid:
                     break
-            if not thru:
+            if not vkm.valid:
                 continue
             goods['name'] = vkm
         return goods

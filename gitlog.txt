@@ -1,3 +1,6 @@
+2021-10-01->0.267
+- fix in node2/verify_merge: adding failed doesn't mean vkm is invalid!
+- satnode: handle gvkms index as part of tname.
 2021-09-28->0.266
 - progress in node2
 2021-09-28->0.265
