@@ -92,7 +92,7 @@ class Node2:
             # thru = True
             kn1s = n2.vk1m.kn1s[:]
             while len(kn1s) > 0:
-                vk1 = n2.vk1m.vkdic[kn1s.pop(0)]
+                vk1 = n2.vk1m.vkdic[kn1s.pop(0)].clone()
                 added = vkm.add_vk1(vk1)
                 if not vkm.valid:
                     break
@@ -100,13 +100,13 @@ class Node2:
                 continue
             kn2s = n2.vkm.kn2s[:]
             while len(kn2s) > 0:
-                vk = n2.vkm.vkdic[kn2s.pop(0)]
+                vk = n2.vkm.vkdic[kn2s.pop(0)].clone()
                 added = vkm.add_vk2(vk)
                 if not vkm.valid:
                     break
             if not vkm.valid:
                 continue
-            goods['name'] = vkm
+            goods[ind] = vkm
         return goods
 
     def get_sat(self, index=None):

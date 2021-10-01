@@ -83,7 +83,7 @@ class SatNode:
                         if gv in ptnode.grps:
                             vkmx = vkm.clone()
                             if vkmx.add_vkdic(ptnode.grps[gv]):
-                                tname = name0 + ptnode.name
+                                tname = name0 + "-" + ptnode.name
                                 dic[tname] = TNode(vkmx, self, tname)
                     elif type(ptnode).__name__ == 'dict':
                         sbit = vkm.pick_sbit()
@@ -96,9 +96,10 @@ class SatNode:
                                 if len(gvkms) == 0:
                                     continue
                                 for index, vkm in gvkms.items():
-                                    tname = name0 + f"({index})-{ky}"
+                                    tname = name0 + f"-({ky})({index})"
                                     tnode = TNode(vkm, self, tname)
                                     dic[tname] = tnode
+                x = 1
             else:
                 self.chdic[gv] = TNode(vkm, self, f"{self.nov}.{gv}")
 
