@@ -7,11 +7,13 @@ class VK12Manager:
     debug = False
 
     def __init__(self, vkdic=None, raw=False):
-        self.valid = True  # no sat possible/total hit-blocked
         if not raw:
             self.reset()  # set vkdic, bdic, kn1s, kn2s
         if vkdic and len(vkdic) > 0:
+            self.valid = True  # no sat possible/total hit-blocked
             self.add_vkdic(vkdic)
+        else:
+            self.valid = False
 
     def reset(self):
         self.bdic = {}  # dict keyed by bit, value: list of knames
@@ -178,6 +180,16 @@ class VK12Manager:
         self.kn2s.append(vk.kname)
         self.vkdic[vk.kname] = vk
         return True
+
+    def remove_vk(self, vk):
+        if type(vk) == str:
+            the_vk = self.vkdic.get(vk, None)
+        else:
+            the_vk = vk
+        if the_vk and the_vk.nob == 1:
+            self.remove_vk1(the_vk)
+        elif the_vk and vk.nob == 2:
+            self.remove_vk2(the_vk)
 
     def remove_vk1(self, kname):
         if kname not in self.kn1s:

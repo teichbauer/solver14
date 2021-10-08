@@ -1,3 +1,6 @@
+2021-10-08->0.269
+- understand why in node2.verify_merge, a kn in n2 can be in vkm from n2's 
+  parent-snode.
 2021-10-01->0.268
 - node2/verify_merge returns a dict keyed by indexes.
 - satnode/spawn: tnode-name pattern: 54.0-(57.a-60-b)(index)

@@ -92,7 +92,10 @@ class Node2:
             # thru = True
             kn1s = n2.vk1m.kn1s[:]
             while len(kn1s) > 0:
-                vk1 = n2.vk1m.vkdic[kn1s.pop(0)].clone()
+                kn = kn1s.pop(0)
+                if kn in vkm.vkdic:
+                    vkm.remove_vk(kn)
+                vk1 = n2.vk1m.vkdic[kn].clone()
                 added = vkm.add_vk1(vk1)
                 if not vkm.valid:
                     break
