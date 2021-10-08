@@ -25,6 +25,7 @@ class VK12Manager:
     def clone(self, deep=True):
         # self.valid must be True. Construct with: no vkdic, raw=True(no reset)
         vk12m = VK12Manager(None, True)
+        vk12m.valid = self.valid
         vk12m.bdic = {k: lst[:] for k, lst in self.bdic.items()}
         vk12m.kn1s = self.kn1s[:]
         vk12m.kn2s = self.kn2s[:]
@@ -181,15 +182,12 @@ class VK12Manager:
         self.vkdic[vk.kname] = vk
         return True
 
-    def remove_vk(self, vk):
-        if type(vk) == str:
-            the_vk = self.vkdic.get(vk, None)
-        else:
-            the_vk = vk
+    def remove_vk(self, kn):
+        the_vk = self.vkdic.get(kn, None)
         if the_vk and the_vk.nob == 1:
-            self.remove_vk1(the_vk)
-        elif the_vk and vk.nob == 2:
-            self.remove_vk2(the_vk)
+            self.remove_vk1(kn)
+        elif the_vk and the_vk.nob == 2:
+            self.remove_vk2(kn)
 
     def remove_vk1(self, kname):
         if kname not in self.kn1s:

@@ -1,3 +1,5 @@
+2021-10-08->0.270
+- fix bugs brought in by 0.269
 2021-10-08->0.269
 - understand why in node2.verify_merge, a kn in n2 can be in vkm from n2's 
   parent-snode.
