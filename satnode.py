@@ -72,7 +72,12 @@ class SatNode:
         for gv in self.bgrid.chheads:
             vkd = self.vk2dics.get(gv, None)
             if vkd:
+                if self.nov == 54 and gv == 1:
+                    x = 1
                 vkm = VK12Manager(vkd)
+                sbit = vkm.pick_sbit()
+                n2 = Node2(vkm, self, sbit)
+                n2.spawn()
             if vkd == None or not vkm.valid:
                 continue
 
@@ -87,9 +92,6 @@ class SatNode:
                                 tname = name0 + "-" + ptnode.name
                                 dic[tname] = TNode(vkmx, self, tname)
                     elif type(ptnode).__name__ == 'dict':
-                        sbit = vkm.pick_sbit()
-                        n2 = Node2(vkm, self, sbit)
-                        n2.spawn()
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
                                 tnd_vkm = VK12Manager(tnd.grps[gv])

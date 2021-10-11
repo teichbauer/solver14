@@ -1,3 +1,8 @@
+2021-10-11->0.281
+- fix vk12m.valid setting bug: it is set to be True by default.
+- got rid of twos in node2
+- node2 vkm is now kept, not popped empty when spawn.
+- snode: n2 construction moved higher level - hope to use node2 on all levels.
 2021-10-10->0.280
 - vk12m.valid fix
 2021-10-08->0.270

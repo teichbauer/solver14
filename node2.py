@@ -13,13 +13,11 @@ class Node2:
         self.parent = parent
         if type(parent).__name__ == 'Node2':
             self.root = parent.root
-            self.twos = parent.twos[:]
             # self.sats = parent.sats[:]
             for kn in parent.vk1m.kn1s:
                 self.vk1m.add_vk1(parent.vk1m.vkdic[kn])
         else:
             self.root = self
-            self.twos = []
             self.end_node2s = []
 
         if type(name) == type(0):
@@ -53,7 +51,7 @@ class Node2:
         # process vks sitting on splitbit
         for kn in drp_kns:
             kns.remove(kn)      # drop-out kn
-            vk = self.vkm.vkdic.pop(kn)
+            vk = self.vkm.vkdic[kn].clone()
             if vk.dic[self.splitbit] == 0:
                 vkm0.add_vk1(vk.drop_bit(self.splitbit))
             else:
@@ -61,23 +59,11 @@ class Node2:
 
         # add vks not touched by splitbit
         for kn in kns:
-            vk2 = self.vkm.vkdic.pop(kn)
+            vk2 = self.vkm.vkdic[kn]
             vkm0.add_vk2(vk2.clone())  # add_vk2 may modify vk2, clone, so
-            vkm1.add_vk2(vk2)          # vkm1/add_vk2 won't have it wrong
-        sd0 = set(self.vkm.bdic) - set(vkm0.bdic)
-        twos0 = []
-        for b in sd0:
-            if b != self.splitbit:
-                twos0.append(b)
-        sd1 = set(self.vkm.bdic) - set(vkm1.bdic)
-        twos1 = []
-        for b in sd1:
-            if b != self.splitbit:
-                twos1.append(b)
+            vkm1.add_vk2(vk2.clone())  # vkm1/add_vk2 won't have it wrong
         node0 = Node2(vkm0, self, f"{self.name}-{self.splitbit}.0")
-        node0.twos += twos0
         node1 = Node2(vkm1, self, f"{self.name}-{self.splitbit}.1")
-        node1.twos += twos1
 
         node0.spawn()
         node1.spawn()
