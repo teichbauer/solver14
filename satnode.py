@@ -70,8 +70,10 @@ class SatNode:
             return self.solve()
 
         for gv in self.bgrid.chheads:
-            vkm = VK12Manager(self.vk2dics.get(gv, None))
-            if not vkm.valid:
+            vkd = self.vk2dics.get(gv, None)
+            if vkd:
+                vkm = VK12Manager(vkd)
+            if vkd == None or not vkm.valid:
                 continue
 
             if self.parent:

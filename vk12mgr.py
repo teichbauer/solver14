@@ -7,13 +7,11 @@ class VK12Manager:
     debug = False
 
     def __init__(self, vkdic=None, raw=False):
+        self.valid = True
         if not raw:
             self.reset()  # set vkdic, bdic, kn1s, kn2s
         if vkdic and len(vkdic) > 0:
-            self.valid = True  # no sat possible/total hit-blocked
             self.add_vkdic(vkdic)
-        else:
-            self.valid = False
 
     def reset(self):
         self.bdic = {}  # dict keyed by bit, value: list of knames
@@ -25,7 +23,6 @@ class VK12Manager:
     def clone(self, deep=True):
         # self.valid must be True. Construct with: no vkdic, raw=True(no reset)
         vk12m = VK12Manager(None, True)
-        vk12m.valid = self.valid
         vk12m.bdic = {k: lst[:] for k, lst in self.bdic.items()}
         vk12m.kn1s = self.kn1s[:]
         vk12m.kn2s = self.kn2s[:]
