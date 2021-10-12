@@ -98,6 +98,9 @@ class Node2:
             goods[ind] = vkm
         return goods
 
+    def merge_node2(self, n2):
+        pass
+
     def get_sat(self, index=None):
         if index == None:
             lst = []
@@ -117,13 +120,3 @@ class Node2:
         m = f"{self.sats}->{self.splitbit} : "
         m += f"{len(self.vkm.bdic)}/{len(self.vkm.vkdic)}"
         return m
-
-    def collect_sats(self, sats=[]):
-        for sat in sats:
-            sat.update(self.sat)
-        for ch in self.chs:
-            ch.collect_sats(sats)
-        return sats
-
-    def check(self, sat, vkm, overbits):
-        return True

@@ -95,9 +95,12 @@ class SatNode:
                         for ky, tnd in ptnode.items():
                             if gv in tnd.grps:
                                 tnd_vkm = VK12Manager(tnd.grps[gv])
-                                if ky == '57.7-60.2':
-                                    x = 1
-                                gvkms = n2.verify_merge(tnd_vkm)
+                                tnd_sbit = tnd_vkm.pick_sbit()
+                                if tnd_sbit:
+                                    m2 = Node2(tnd_vkm, self, tnd_sbit)
+                                    gvkms = n2.merge_node2(m2)
+                                else:
+                                    gvkms = n2.verify_merge(tnd_vkm)
                                 if len(gvkms) == 0:
                                     continue
                                 for index, vkm in gvkms.items():
