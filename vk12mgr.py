@@ -205,16 +205,3 @@ class VK12Manager:
             if len(self.bdic[b]) == 0:
                 self.bdic.pop(b)
         return vk
-
-    def pick_sbit(self):
-        # find bit with most overlapping vk2s
-        max = 1
-        maxbit = None
-        bits = sorted(self.bdic.keys(), reverse=True)
-        for b in bits:
-            names = self.bdic[b]
-            ln = len(names)
-            if ln > max and set(names).issubset(self.kn2s):
-                max = ln
-                maxbit = b
-        return maxbit

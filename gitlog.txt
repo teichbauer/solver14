@@ -1,3 +1,6 @@
+2021-10-12->0.283
+- node2.verify_vk1: check 2 node2's vk1ms are in conflict
+- split-bit is moved to node2, from vk12m
 2021-10-12->0.282
 - vk12m.pick_sbit: sbit only has overlapping kn2s
 - progress on node2.merge_node2, usage env in snode.

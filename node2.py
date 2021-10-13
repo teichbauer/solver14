@@ -5,7 +5,7 @@ from basics import get_bit
 
 
 class Node2:
-    def __init__(self, vkm, parent, name):
+    def __init__(self, vkm, parent, name='root'):
         if type(vkm).__name__ == 'VK12Manager':
             self.vk1m, self.vkm = self.split_vkm(vkm.clone())
         elif type(vkm) == type({}):
@@ -20,13 +20,21 @@ class Node2:
             self.root = self
             self.end_node2s = []
 
-        if type(name) == type(0):
-            self.splitbit = name
-            self.name = 'root'
-        else:
-            self.name = name
-            self.splitbit = self.vkm.pick_sbit()
+        self.splitbit = self.pick_sbit()
+        self.name = name
         self.chs = []  # [<0-th vkm>, <1-th vkm>]
+
+    def pick_sbit(self):
+        # find bit with most overlapping vk2s
+        max = 1
+        maxbit = None
+        bits = sorted(self.vkm.bdic.keys(), reverse=True)
+        for b in bits:
+            ln = len(self.vkm.bdic[b])
+            if ln > max:
+                max = ln
+                maxbit = b
+        return maxbit
 
     def split_vkm(self, vk12m):
         vk1m = VK12Manager()
@@ -35,6 +43,19 @@ class Node2:
             if vk1:
                 vk1m.add_vk1(vk1)
         return vk1m, vk12m  # vk12m is now vk2m
+
+    def verify_vk1s(self, node):
+        shared_bits = set(self.vk1m.bdic).intersection(node.vk1m.bdic)
+        for bit in shared_bits:
+            names = self.vk1m.bdic[bit]
+            xnames = node.vk1m.bdic[bit]
+            for n in names:
+                for xn in xnames:
+                    v = self.vk1m.vkdic[n].hbit_value()[1]
+                    xv = node.vk1m.vkdic[xn].hbit_value()[1]
+                    if v != v:
+                        return False
+        return True
 
     def spawn(self):
         if not self.splitbit:
@@ -99,7 +120,11 @@ class Node2:
         return goods
 
     def merge_node2(self, n2):
-        pass
+        goods = {}
+        for ind, node in enumerate(n2.end_node2s):
+            if self.verify_vk1s(node):
+                goods[ind] = node.vkm
+        return goods
 
     def get_sat(self, index=None):
         if index == None:
