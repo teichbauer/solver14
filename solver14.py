@@ -27,7 +27,7 @@ def process(cnfname):
     vkm = make_vkm(cnfname)
     satslots = list(range(Center.maxnov))
     sh = SatHolder(satslots)
-    sn = SatNode(None, sh, vkm, vkm.make_choice())
+    sn = SatNode(None, sh, vkm)
     return sn.spawn()
 
 

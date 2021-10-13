@@ -10,7 +10,8 @@ from basics import ordered_dic_string
 
 class SatNode:
 
-    def __init__(self, parent, sh, vkm, choice):
+    def __init__(self, parent, sh, vkm):
+        choice = vkm.make_choice()  # avks be pooped out from vkm.vkdic
         self.parent = parent
         if parent:
             self.nov = parent.nov - 3
@@ -26,7 +27,7 @@ class SatNode:
         self.split_vkm()
 
     def split_vkm(self):
-        """ 1. pop-out touched-vk3s forming root_vk2dic with them
+        """ 1. pop-out touched-vk3s forming sumvk2dic with them
             2. tdic: keyed by cvs of vks and values are lists of vks
                this results in self.vk2dics dict, keyed by the possible 
                grid-values(bgrid/chheads), vkdics restricting the value
@@ -38,30 +39,28 @@ class SatNode:
         Center.satbits.update(self.bgrid.bitset)
         Center.bits = Center.bits - self.bgrid.bitset
 
-        self.root_vk2dic = {}
-        tdic = {}
+        # sumvk2dic has all vk12s from touched.
+        # each vk12 in here is referred by from vk12 in each self.vk12dics[v]
+        self.sumvk12dic = {}
+        # vk2dics: vkdics keyed by child-head-value
+        self.vk12dics = {}
         for kn in self.touched:
             vk = self.vkm.pop_vk(kn)
             cvs, outdic = self.bgrid.cvs_and_outdic(vk)
             rvk = VKlause(vk.kname, outdic)
             for v in cvs:
                 if v not in self.bgrid.covers:
-                    s = tdic.setdefault(v, set([]))
-                    s.add(rvk)
-                if kn not in self.root_vk2dic:
-                    self.root_vk2dic[kn] = rvk
-        self.vk2dics = {}
-        for v in self.bgrid.chheads:
-            if v in tdic:
-                vkdic = self.vk2dics.setdefault(v, {})
-                for vk2 in tdic[v]:
-                    vkdic[vk2.kname] = vk2
+                    vk12dic = self.vk12dics.setdefault(v, {})
+                    vk12dic[kn] = rvk
+                if kn not in self.sumvk12dic:
+                    self.sumvk12dic[kn] = rvk
 
         if len(self.vkm.vkdic) > 0:
-            self.next = SatNode(self,
+            # make next level (nov decrease 3) snode
+            # self.vkm now has all vk3s
+            self.next = SatNode(self,  # parent
                                 self.next_sh.clone(),
-                                self.vkm,
-                                self.vkm.make_choice())
+                                self.vkm)
     # ---- def split_vkm(self) --------
 
     def spawn(self):

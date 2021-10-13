@@ -67,6 +67,8 @@ class BitGrid:
 
     def cvs_and_outdic(self, vk):
         g = [2, 1, 0]
+        # for a vk touched by grid-bits (1 or 2 bits)
+        # cvs may contain 2 or 4 values in it
         cvs = []
         # vk's dic values within self.grid-bits, forming a value in (0..7)
         # example: grids: (16,6,1), vk.dic:{29:0, 16:1, 1:0} has
@@ -74,7 +76,7 @@ class BitGrid:
         # * is the variable value taking 0/1 - that will be set by
         # self.vary_1bit call, but for to begin, set v to be 4/100
         v = 0
-        out_dic = {}
+        out_dic = {}  # dic with 1 or 2 k/v pairs, for making vk12
         for b in vk.dic:
             if b in self.bits:
                 ind = self.bits.index(b)  # self.bits: descending order
@@ -99,7 +101,4 @@ class BitGrid:
             # get values of all possible settings of untouched bits in g
             cvs = self.vary_1bit(v, g, cvs)
             cvs.sort()
-        # else: # in case of len(out_dic) == 3
-        # cvs remains None, ovk is a vk3 (untouched by grid-bits)
-        # return cvs, ovk
         return cvs, out_dic
