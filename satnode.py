@@ -61,7 +61,12 @@ class SatNode:
             self.next = SatNode(self,  # parent
                                 self.next_sh.clone(),
                                 self.vkm)
+        else:
+            self.back_path()
     # ---- def split_vkm(self) --------
+
+    def back_path(self):
+        pass
 
     def spawn(self):
         self.chdic = {}

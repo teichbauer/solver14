@@ -22,6 +22,8 @@ class VKManager:
         for bit in vk.bits:
             if kn in self.bdic[bit]:
                 self.bdic[bit].remove(kn)
+                if len(self.bdic[bit]) == 0:
+                    self.bdic.pop(bit)
             else:
                 raise Exception(f"pop {kn} failed")
         return vk
@@ -90,7 +92,7 @@ class VKManager:
                     max_tcleng = ltcvk
                     best_bits = bits
         result = {
-            "avks": [self.vkdic.pop(kn) for kn in best_choice[0]],
+            "avks": [self.pop_vk(kn) for kn in best_choice[0]],
             "touched": best_choice[1],
             "bits": best_bits,
         }
