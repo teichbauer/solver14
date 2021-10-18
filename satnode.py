@@ -13,10 +13,10 @@ class SatNode:
     def __init__(self, parent, sh, vkm):
         choice = vkm.make_choice()  # avks be pooped out from vkm.vkdic
         self.parent = parent
-        if parent:
-            self.nov = parent.nov - 3
-        else:
+        if parent == None:
             self.nov = Center.maxnov
+        else:
+            self.nov = parent.nov - 3
         self.sh = sh
         self.vkm = vkm
         Center.snodes[self.nov] = self
@@ -29,7 +29,7 @@ class SatNode:
     def split_vkm(self):
         """ 1. pop-out touched-vk3s forming sumvk2dic with them
             2. tdic: keyed by cvs of vks and values are lists of vks
-               this results in self.vk2dics dict, keyed by the possible 
+               this results in self.vk12dics dict, keyed by the possible 
                grid-values(bgrid/chheads), vkdics restricting the value
                if vk2dics misses a chhead-value, that doesn't mean, this value
                if not allowed - quite the opposite: This means that there is no
@@ -43,17 +43,18 @@ class SatNode:
         # each vk12 in here is referred by from vk12 in each self.vk12dics[v]
         self.sumvk12dic = {}
         # vk2dics: vkdics keyed by child-head-value
-        self.vk12dics = {}
+        self.vk12dics = {v: {} for v in self.bgrid.chheads}
         for kn in self.touched:
             vk = self.vkm.pop_vk(kn)
             cvs, outdic = self.bgrid.cvs_and_outdic(vk)
             rvk = VKlause(vk.kname, outdic)
             for v in cvs:
                 if v not in self.bgrid.covers:
-                    vk12dic = self.vk12dics.setdefault(v, {})
-                    vk12dic[kn] = rvk
+                    self.vk12dics[v][kn] = rvk
                 if kn not in self.sumvk12dic:
                     self.sumvk12dic[kn] = rvk
+
+        self.make_n2s()
 
         if len(self.vkm.vkdic) > 0:
             # make next level (nov decrease 3) snode
@@ -63,10 +64,29 @@ class SatNode:
                                 self.vkm)
         else:
             self.back_path()
+        x = 1
     # ---- def split_vkm(self) --------
 
+    def make_n2s(self):
+        self.n2s = {}
+        for i, vkdic in self.vk12dics.items():
+            vkm = VK12Manager(vkdic)
+            n2 = Node2(vkm, self)
+            n2.spawn()
+            self.n2s[i] = n2
+        x = 1
+
     def back_path(self):
-        pass
+        sats = {v: self.bgrid.grid_sat(v) for v in self.bgrid.chheads}
+        n2s = self.parent.n2s
+        for pv, n2 in n2s.items():
+            for v, sat in sats.items():
+                for node2 in n2.end_node2s:
+                    if node2.sat_hit_test(sat):
+                        node2.grps[v] = True
+                    else:
+                        node2.grps[v] = False
+        x = 1
 
     def spawn(self):
         self.chdic = {}
@@ -74,7 +94,7 @@ class SatNode:
             return self.solve()
 
         for gv in self.bgrid.chheads:
-            vkd = self.vk2dics.get(gv, None)
+            vkd = self.vk12dics.get(gv, None)
             if vkd:
                 if self.nov == 54 and gv == 1:
                     x = 1
@@ -100,8 +120,6 @@ class SatNode:
                                 tnd_vkm = VK12Manager(tnd.grps[gv])
                                 m2 = Node2(tnd_vkm, self)
                                 gvkms = m2.merge_node2(n2)
-                                # else:
-                                #     gvkms = n2.verify_merge(tnd_vkm)
                                 if len(gvkms) == 0:
                                     continue
                                 for index, vkm in gvkms.items():

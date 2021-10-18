@@ -1,3 +1,7 @@
+2021-10-17->0.286
+- snode.vk12dics keeps every chheads/v, if there is no vk12, then as {}
+  so that 1 node2 cwill be made for this.
+- node2 progress
 2021-10-14->0.285
 - fix a bug in vkm.make_choice - pop vk didn't clean vk's bits in bdic.
   also, when using pop_vk(kn), clean up bdic[bit] if it becomes empty.

@@ -23,6 +23,7 @@ class Node2:
         self.splitbit = self.pick_sbit()
         self.name = name
         self.chs = []  # [<0-th vkm>, <1-th vkm>]
+        self.grps = {}
 
     def pick_sbit(self):
         # find bit with most overlapping vk2s
@@ -35,6 +36,21 @@ class Node2:
                 max = ln
                 maxbit = b
         return maxbit
+
+    def sat_hit_test(self, sat):
+        sbits = set(sat)
+        s1 = sbits.intersection(self.vk1m.bdic)
+        for b in s1:
+            for kn, vk1 in self.vk1m.vkdic.items():
+                if vk1.hit(sat):
+                    return True
+        s2 = sbits.intersection(self.vkm.bdic)
+        if len(s2) > 2:
+            for kn, vk2 in self.vkm.vkdic.items():
+                if s2.issuperset(vk2.bits):
+                    if vk2.hit(sat):
+                        return True
+        return False
 
     def split_vkm(self, vk12m):
         vk1m = VK12Manager()
@@ -91,7 +107,6 @@ class Node2:
         self.chs = node0, node1  # tuple of 2 children
         return True
 
-    # def verify_merge(self, vkm):
     def verify_merge(self, tnd_vkm):
         goods = {}
         for ind, n2 in enumerate(self.end_node2s):
